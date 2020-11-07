@@ -1,0 +1,15 @@
+# /etc/systemd/system/plexdrive.service
+
+[Unit]
+Description=Plexdrive
+AssertPathIsDirectory=/mnt/plexdrive
+After=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/plexdrive mount -c /root/.plexdrive -o allow_other /mnt/plexdrive
+ExecStop=/bin/fusermount -u /mnt/plexdrive
+Restart=on-abort
+
+[Install]
+WantedBy=default.target
