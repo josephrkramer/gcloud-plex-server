@@ -7,6 +7,7 @@ From https://github.com/plexdrive/plexdrive
 Install guides to use as templates for later automation:
 - https://www.linuxbabe.com/ubuntu/install-plex-media-server-ubuntu-18-04
 - https://linuxize.com/post/how-to-install-plex-media-server-on-debian-9/
+- https://www.cyberciti.biz/faq/how-to-set-up-automatic-updates-for-ubuntu-linux-18-04/
 
 Backup instructions for later automation:
 - https://support.plex.tv/articles/201539237-backing-up-plex-media-server-data/
