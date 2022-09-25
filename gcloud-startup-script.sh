@@ -52,7 +52,7 @@ INSTALL_CHROME=yes
 INSTALL_FULL_DESKTOP=no
 
 # Any additional packages that should be installed on startup can be added here
-EXTRA_PACKAGES="less bzip2 zip unzip tasksel wget git"
+EXTRA_PACKAGES="less bzip2 zip unzip tasksel wget git xfce4-terminal"
 
 apt-get update
 
