@@ -11,3 +11,6 @@ Install guides to use as templates for later automation:
 
 Backup instructions for later automation:
 - https://support.plex.tv/articles/201539237-backing-up-plex-media-server-data/
+
+Remote desktop auto-install instructions:
+- https://cloud.google.com/architecture/chrome-desktop-remote-on-compute-engine
