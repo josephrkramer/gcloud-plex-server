@@ -27,3 +27,6 @@ sudo passwd $(whoami)
 sudo adduser $(whoami) sudo
 ```
 - https://remotedesktop.google.com/headless
+
+Configure plex from remote desktop machine:
+- http://127.0.0.1:32400/web
