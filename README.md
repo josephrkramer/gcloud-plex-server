@@ -22,4 +22,8 @@ sudo journalctl -o cat -f _SYSTEMD_UNIT=google-startup-scripts.service
 ```
 sudo passwd $(whoami)
 ```
+- Add user to sudoers
+```
+sudo adduser $(whoami) sudo
+```
 - https://remotedesktop.google.com/headless
