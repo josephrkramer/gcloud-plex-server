@@ -14,3 +14,9 @@ Backup instructions for later automation:
 
 Remote desktop auto-install instructions:
 - https://cloud.google.com/architecture/chrome-desktop-remote-on-compute-engine
+- Monitor gcloud-startup-script.sh install progress
+```
+sudo journalctl -o cat -f _SYSTEMD_UNIT=google-startup-scripts.service
+```
+- https://remotedesktop.google.com/headless
+- 
