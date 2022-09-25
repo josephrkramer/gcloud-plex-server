@@ -18,5 +18,8 @@ Remote desktop auto-install instructions:
 ```
 sudo journalctl -o cat -f _SYSTEMD_UNIT=google-startup-scripts.service
 ```
+- Set a password
+```
+sudo passwd $(whoami)
+```
 - https://remotedesktop.google.com/headless
-- 
