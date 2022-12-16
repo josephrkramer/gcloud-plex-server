@@ -7,7 +7,7 @@ After=network-online.target
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/plexdrive mount -c /root/.plexdrive -o allow_other /mnt/plexdrive
+ExecStart=/usr/bin/rclone mount plexdrive: /mnt/plexdrive --allow-other --config=/home/joseph_ryan_kramer/.config/rclone/rclone.conf
 ExecStop=/bin/fusermount -u /mnt/plexdrive
 Restart=on-abort
 
