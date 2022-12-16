@@ -1,8 +1,15 @@
 # gcloud-plex-server
 Scripts to automate creation of a Plex Server on Google Compute Engine
 
-From https://github.com/plexdrive/plexdrive
+From https://github.com/plexdrive/plexdrive -- OBSOLETE
 - Link to latest plexdrive asset https://github.com/plexdrive/plexdrive/releases/latest/download/plexdrive-linux-amd64
+
+Install and configure rclone for filesystem access
+
+```
+sudo apt-get install rclone
+rclone config
+```
 
 Install guides to use as templates for later automation:
 - https://www.linuxbabe.com/ubuntu/install-plex-media-server-ubuntu-18-04
