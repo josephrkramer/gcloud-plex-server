@@ -55,7 +55,7 @@ INSTALL_FULL_DESKTOP=no
 EXTRA_PACKAGES="less bzip2 zip unzip tasksel wget git xfce4-terminal"
 
 apt-get update
-apt-get upgrade --assume-yes --fix-broken
+apt-get upgrade --assume-yes --fix-broken --with-new-pkgs
 
 # Install backports version of libgbm1 on Debian 9/stretch
 [[ $(/usr/bin/lsb_release --codename --short) == "stretch" ]] && \
