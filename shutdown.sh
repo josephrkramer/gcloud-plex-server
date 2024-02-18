@@ -62,7 +62,8 @@ oldest_snapshot=$(echo "$snapshots" | head -n 1 | awk '{print $1}')
 
 # Check if a snapshot was found
 if [ -z "$oldest_snapshot" ]; then
-  echo "No snapshots found"
+  echo "No snapshots found, leaving VM instance in tact as a snapshot should have been created"
+  exit 1
 else
   echo "Oldest snapshot: $oldest_snapshot"
 fi
