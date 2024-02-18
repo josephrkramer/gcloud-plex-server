@@ -33,16 +33,16 @@ fi
 
 #create disk from snapshot
 #echo "Creating disk $DISK_NAME from $most_recent_snapshot"
-#gcloud compute disks create $DISK_NAME \
-#    --source-snapshot=$most_recent_snapshot \
-#    --zone=$ZONE
+gcloud compute disks create $DISK_NAME \
+    --source-snapshot=$most_recent_snapshot \
+    --zone=$ZONE
 
 #create instance using template and disk
 #echo "Creating instance $SERVER_NAME from $DISK_NAME"
 gcloud compute instances create $SERVER_NAME \
   --zone=$ZONE \
-  --source-instance-template $TEMPLATE \  
-  --create-disk=auto-delete=yes,boot=yes,device-name=$DISK_NAME,mode=rw,size=60,source-snapshot=$most_recent_snapshot
+  --source-instance-template=$TEMPLATE \
+  --disk=name=$DISK_NAME,boot=yes,auto-delete=yes
 
 echo "Done. Plex server ready."
 
