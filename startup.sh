@@ -32,13 +32,13 @@ fi
 #exit 0
 
 #create disk from snapshot
-#echo "Creating disk $DISK_NAME from $most_recent_snapshot"
+echo "Creating disk $DISK_NAME from $most_recent_snapshot"
 gcloud compute disks create $DISK_NAME \
     --source-snapshot=$most_recent_snapshot \
     --zone=$ZONE
 
 #create instance using template and disk
-#echo "Creating instance $SERVER_NAME from $DISK_NAME"
+echo "Creating instance $SERVER_NAME from $DISK_NAME"
 gcloud compute instances create $SERVER_NAME \
   --zone=$ZONE \
   --source-instance-template=$TEMPLATE \
