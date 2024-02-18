@@ -5,9 +5,6 @@ snapshots=$(gcloud compute snapshots list \
             --format="value(name,creationTimestamp)" \
             --sort-by=creationTimestamp)
 
-#Print all snapshots
-echo "SNAPSHOTS: $snapshots"
-
 # Count the number of snapshots
 snapshot_count=$(echo "$snapshots" | wc -l)
 echo "Number of snapshots: $snapshot_count"
@@ -21,3 +18,11 @@ if [ -z "$oldest_snapshot" ]; then
 else
   echo "Oldest snapshot: $oldest_snapshot"
 fi
+
+if (( snapshot_count > 2 )); then
+    echo "Found $snapshot_count snapshots, deleting the oldest snapshot: $oldest_snapshot"
+    gcloud compute snapshots delete $oldest_snapshot
+else
+    echo "Only $snapshot_count snapshot(s), not deleting anything"
+fi
+
