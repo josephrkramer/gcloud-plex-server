@@ -40,6 +40,7 @@ else
 fi
 
 #gcloud compute snapshots create snapshot-1 --project=basic-lock-251300 --source-disk=plex-server-20240218-181437 --source-disk-zone=us-east1-b --storage-location=us-east1
+echo "Creating snapshot $SNAPSHOT_NAME from disk $most_recent_disk"
 gcloud compute snapshots create $SNAPSHOT_NAME \
      --source-disk=$most_recent_disk \
      --source-disk-zone=$ZONE \
