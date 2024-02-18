@@ -41,8 +41,8 @@ fi
 
 #gcloud compute snapshots create snapshot-1 --project=basic-lock-251300 --source-disk=plex-server-20240218-181437 --source-disk-zone=us-east1-b --storage-location=us-east1
 gcloud compute disks snapshot $SNAPSHOT_NAME \
-     --source-disk $most_recent_disk \
-     --zone $ZONE \
+     --source-disk=$most_recent_disk \
+     --zone=$ZONE \
      --storage-location=us-east1
 
 
