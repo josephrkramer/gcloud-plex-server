@@ -4,6 +4,13 @@ ZONE=us-east1-b
 INIT_DATE=$(date +%Y%m%d-%H%M%S)
 SNAPSHOT_NAME=plex-snapshot-$INIT_DATE
 
+
+gcloud config set project basic-lock-251300
+
+
+gcloud auth login
+
+
 # Get a list of VM instances with creation timestamps, sorted in descending order
 instances=$(gcloud compute instances list \
             --format="value(name,creationTimestamp)" \
