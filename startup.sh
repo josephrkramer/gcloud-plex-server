@@ -6,6 +6,13 @@ INIT_DATE=$(date +%Y%m%d-%H%M%S)
 DISK_NAME=plex-disk-$INIT_DATE
 SERVER_NAME=plex-server-$INIT_DATE
 
+
+gcloud config set project basic-lock-251300
+
+
+gcloud auth login
+
+
 # Get a list of snapshots, along with their creation timestamps, sorted in descending order 
 snapshots=$(gcloud compute snapshots list \
             --format="value(name,creationTimestamp)" \
