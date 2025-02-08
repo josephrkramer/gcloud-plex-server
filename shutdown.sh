@@ -75,17 +75,18 @@ else
   echo "Oldest snapshot: $oldest_snapshot"
 fi
 
-#Delete the instance
+#Delete the snapshot
 if (( snapshot_count > 2 )); then
     echo "Found $snapshot_count snapshots, deleting the oldest snapshot: $oldest_snapshot"
-    gcloud compute snapshots delete $oldest_snapshot
+    gcloud compute snapshots delete --quiet $oldest_snapshot
 else
     echo "Only $snapshot_count snapshot(s), not deleting anything"
 fi
 
 #-------------------------------------------
 
-gcloud compute instances delete $most_recent_vm --zone $ZONE
+#Delete the instance
+gcloud compute instances delete --quiet $most_recent_vm --zone $ZONE
 
 echo "Done. Plex server shutdown."
 
