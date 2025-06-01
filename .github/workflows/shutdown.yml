@@ -1,0 +1,87 @@
+name: Plex Shutdown
+
+on:
+  workflow_dispatch:
+
+jobs:
+  shutdown-plex:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+
+      - name: Define Variables
+        id: vars
+        run: |
+          echo "ZONE=us-east1-b" >> $GITHUB_ENV
+          echo "INIT_DATE=$(date +%Y%m%d-%H%M%S)" >> $GITHUB_ENV
+          echo "SNAPSHOT_NAME=plex-snapshot-$(date +%Y%m%d-%H%M%S)" >> $GITHUB_ENV
+          echo "PROJECT_ID=basic-lock-251300" >> $GITHUB_ENV
+
+      - name: Configure gcloud project
+        run: gcloud config set project ${{ env.PROJECT_ID }}
+
+      - name: Get most recent VM instance
+        id: vm_instance
+        run: |
+          INSTANCE_INFO=$(gcloud compute instances list --project=${{ env.PROJECT_ID }} --format="value(name,creationTimestamp)" --sort-by=~creationTimestamp | head -n 1)
+          if [ -z "$INSTANCE_INFO" ]; then
+            echo "No VM instance found. Exiting."
+            exit 1
+          fi
+          MOST_RECENT_VM=$(echo $INSTANCE_INFO | awk '{print $1}')
+          echo "MOST_RECENT_VM=$MOST_RECENT_VM" >> $GITHUB_ENV
+          echo "::set-output name=vm_name::$MOST_RECENT_VM"
+
+      - name: Stop the instance
+        run: |
+          gcloud compute instances stop ${{ steps.vm_instance.outputs.vm_name }} \
+            --project=${{ env.PROJECT_ID }} \
+            --zone=${{ env.ZONE }}
+
+      - name: Get most recent disk
+        id: disk
+        run: |
+          DISK_INFO=$(gcloud compute disks list --project=${{ env.PROJECT_ID }} --format="value(name,creationTimestamp)" --sort-by=~creationTimestamp | head -n 1)
+          if [ -z "$DISK_INFO" ]; then
+            echo "No disk found. Exiting."
+            exit 1
+          fi
+          MOST_RECENT_DISK=$(echo $DISK_INFO | awk '{print $1}')
+          echo "MOST_RECENT_DISK=$MOST_RECENT_DISK" >> $GITHUB_ENV
+          echo "::set-output name=disk_name::$MOST_RECENT_DISK"
+
+      - name: Create snapshot from disk
+        run: |
+          gcloud compute snapshots create ${{ env.SNAPSHOT_NAME }} \
+            --project=${{ env.PROJECT_ID }} \
+            --source-disk=${{ steps.disk.outputs.disk_name }} \
+            --source-disk-zone=${{ env.ZONE }} \
+            --storage-location=us-east1
+
+      - name: Manage snapshots
+        run: |
+          SNAPSHOTS=$(gcloud compute snapshots list --project=${{ env.PROJECT_ID }} --format="value(name,creationTimestamp)" --sort-by=creationTimestamp)
+          SNAPSHOT_COUNT=$(echo "$SNAPSHOTS" | wc -l)
+          if [ "$SNAPSHOT_COUNT" -gt 2 ]; then
+            OLDEST_SNAPSHOT=$(echo "$SNAPSHOTS" | head -n 1 | awk '{print $1}')
+            echo "Deleting oldest snapshot: $OLDEST_SNAPSHOT"
+            gcloud compute snapshots delete --quiet $OLDEST_SNAPSHOT --project=${{ env.PROJECT_ID }}
+          fi
+
+      - name: Delete the instance
+        run: |
+          gcloud compute instances delete --quiet ${{ steps.vm_instance.outputs.vm_name }} \
+            --project=${{ env.PROJECT_ID }} \
+            --zone=${{ env.ZONE }}
+
+      - name: Output completion message
+        run: echo "Done. Plex server shutdown."

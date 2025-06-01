@@ -1,0 +1,62 @@
+name: Plex Startup
+
+on:
+  workflow_dispatch:
+
+jobs:
+  startup-plex:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+
+      - name: Define Variables
+        id: vars
+        run: |
+          echo "ZONE=us-east1-b" >> $GITHUB_ENV
+          echo "TEMPLATE=plex-template-1" >> $GITHUB_ENV
+          echo "INIT_DATE=$(date +%Y%m%d-%H%M%S)" >> $GITHUB_ENV
+          echo "DISK_NAME=plex-disk-$(date +%Y%m%d-%H%M%S)" >> $GITHUB_ENV
+          echo "SERVER_NAME=plex-server-$(date +%Y%m%d-%H%M%S)" >> $GITHUB_ENV
+          echo "PROJECT_ID=basic-lock-251300" >> $GITHUB_ENV
+
+      - name: Configure gcloud project
+        run: gcloud config set project ${{ env.PROJECT_ID }}
+
+      - name: Get most recent snapshot
+        id: snapshot
+        run: |
+          SNAPSHOT_INFO=$(gcloud compute snapshots list --project=${{ env.PROJECT_ID }} --format="value(name,creationTimestamp)" --sort-by=~creationTimestamp | head -n 1)
+          if [ -z "$SNAPSHOT_INFO" ]; then
+            echo "No snapshot found. Exiting."
+            exit 1
+          fi
+          MOST_RECENT_SNAPSHOT=$(echo $SNAPSHOT_INFO | awk '{print $1}')
+          echo "MOST_RECENT_SNAPSHOT=$MOST_RECENT_SNAPSHOT" >> $GITHUB_ENV
+          echo "::set-output name=snapshot_name::$MOST_RECENT_SNAPSHOT"
+
+      - name: Create disk from snapshot
+        run: |
+          gcloud compute disks create ${{ env.DISK_NAME }} \
+            --project=${{ env.PROJECT_ID }} \
+            --source-snapshot=${{ env.MOST_RECENT_SNAPSHOT }} \
+            --zone=${{ env.ZONE }}
+
+      - name: Create instance from template and disk
+        run: |
+          gcloud compute instances create ${{ env.SERVER_NAME }} \
+            --project=${{ env.PROJECT_ID }} \
+            --zone=${{ env.ZONE }} \
+            --source-instance-template=${{ env.TEMPLATE }} \
+            --disk=name=${{ env.DISK_NAME }},boot=yes,auto-delete=yes
+
+      - name: Output completion message
+        run: echo "Done. Plex server ready."
