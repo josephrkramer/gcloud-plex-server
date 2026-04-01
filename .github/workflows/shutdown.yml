@@ -2,6 +2,23 @@ name: Plex Shutdown
 
 on:
   workflow_dispatch:
+    inputs:
+      zone:
+        description: 'Google Cloud Zone'
+        required: true
+        default: 'us-east1-b'
+        type: choice
+        options:
+          - us-east1-b
+          - us-east1-c
+          - us-east1-d
+          - us-central1-a
+          - us-central1-b
+          - us-central1-c
+          - us-central1-f
+          - us-west1-a
+          - us-west1-b
+          - us-west1-c
 
 jobs:
   shutdown-plex:
@@ -21,7 +38,7 @@ jobs:
       - name: Define Variables
         id: vars
         run: |
-          echo "ZONE=us-east1-b" >> $GITHUB_ENV
+          echo "ZONE=${{ inputs.zone }}" >> $GITHUB_ENV
           echo "INIT_DATE=$(date +%Y%m%d-%H%M%S)" >> $GITHUB_ENV
           echo "SNAPSHOT_NAME=plex-snapshot-$(date +%Y%m%d-%H%M%S)" >> $GITHUB_ENV
           echo "PROJECT_ID=basic-lock-251300" >> $GITHUB_ENV
