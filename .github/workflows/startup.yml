@@ -37,6 +37,16 @@ on:
           - us-west4-a
           - us-west4-b
           - us-west4-c
+      template:
+        description: 'Google Cloud Instance Template'
+        required: true
+        default: 'plex-template-1'
+        type: string
+      project_id:
+        description: 'Google Cloud Project ID'
+        required: true
+        default: 'basic-lock-251300'
+        type: string
 
 jobs:
   startup-plex:
@@ -57,11 +67,11 @@ jobs:
         id: vars
         run: |
           echo "ZONE=${{ inputs.zone }}" >> $GITHUB_ENV
-          echo "TEMPLATE=plex-template-1" >> $GITHUB_ENV
+          echo "TEMPLATE=${{ inputs.template }}" >> $GITHUB_ENV
           echo "INIT_DATE=$(date +%Y%m%d-%H%M%S)" >> $GITHUB_ENV
           echo "DISK_NAME=plex-disk-$(date +%Y%m%d-%H%M%S)" >> $GITHUB_ENV
           echo "SERVER_NAME=plex-server-$(date +%Y%m%d-%H%M%S)" >> $GITHUB_ENV
-          echo "PROJECT_ID=basic-lock-251300" >> $GITHUB_ENV
+          echo "PROJECT_ID=${{ inputs.project_id }}" >> $GITHUB_ENV
 
       - name: Configure gcloud project
         run: gcloud config set project ${{ env.PROJECT_ID }}

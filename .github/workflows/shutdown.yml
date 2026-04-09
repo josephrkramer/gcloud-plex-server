@@ -37,6 +37,11 @@ on:
           - us-west4-a
           - us-west4-b
           - us-west4-c
+      project_id:
+        description: 'Google Cloud Project ID'
+        required: true
+        default: 'basic-lock-251300'
+        type: string
 
 jobs:
   shutdown-plex:
@@ -59,7 +64,7 @@ jobs:
           echo "ZONE=${{ inputs.zone }}" >> $GITHUB_ENV
           echo "INIT_DATE=$(date +%Y%m%d-%H%M%S)" >> $GITHUB_ENV
           echo "SNAPSHOT_NAME=plex-snapshot-$(date +%Y%m%d-%H%M%S)" >> $GITHUB_ENV
-          echo "PROJECT_ID=basic-lock-251300" >> $GITHUB_ENV
+          echo "PROJECT_ID=${{ inputs.project_id }}" >> $GITHUB_ENV
 
       - name: Configure gcloud project
         run: gcloud config set project ${{ env.PROJECT_ID }}
