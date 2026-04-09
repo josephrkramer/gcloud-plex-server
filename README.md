@@ -34,6 +34,16 @@ To use these workflows, you need to configure the following:
     *   Create a new repository secret named `GCP_SA_KEY`. Paste the entire content of the JSON service account key file into this secret.
     *   (Optional but Recommended) Create another secret named `GCP_PROJECT_ID` and set its value to your Google Cloud Project ID. If you don't set this, the workflows will use the project ID hardcoded in the workflow files (`basic-lock-251300`), but using a secret is more flexible and secure. The workflows have been written to use the `GCP_PROJECT_ID` secret if available.
 
+### Choosing a Region and Zone
+
+When starting a Plex server, you will be prompted to select a Google Cloud Zone. You should choose a region and zone based on the following recommendations:
+
+*   **Latency:** Pick a region geographically closest to where you and your users will be streaming from to reduce network latency and improve streaming quality.
+*   **Cost:** Compute Engine instances and network egress costs vary between regions. Check the current pricing to find a cost-effective region.
+*   **Carbon Footprint:** Consider choosing a region with a lower carbon footprint if environmental impact is a priority.
+
+You can use the [Google Cloud Region Picker](https://cloud.withgoogle.com/region-picker/) tool to help evaluate and compare regions based on these criteria.
+
 ### Triggering the Workflows
 
 Both workflows are configured for manual triggering:
