@@ -37,10 +37,43 @@ on:
           - us-west4-a
           - us-west4-b
           - us-west4-c
-      template:
-        description: 'Google Cloud Instance Template'
+      machine_type:
+        description: 'Google Cloud Machine Type'
         required: true
-        default: 'plex-template-1'
+        default: 'e2-standard-4'
+        type: string
+      disk_type:
+        description: 'Google Cloud Disk Type'
+        required: true
+        default: 'pd-balanced'
+        type: string
+      disk_size:
+        description: 'Google Cloud Disk Size (GB)'
+        required: true
+        default: '60'
+        type: string
+      network:
+        description: 'Google Cloud Network'
+        required: true
+        default: 'default'
+        type: string
+      network_tier:
+        description: 'Google Cloud Network Tier'
+        required: true
+        default: 'PREMIUM'
+        type: choice
+        options:
+          - PREMIUM
+          - STANDARD
+      service_account:
+        description: 'Google Cloud Service Account'
+        required: true
+        default: '453460631559-compute@developer.gserviceaccount.com'
+        type: string
+      scopes:
+        description: 'Google Cloud Service Account Scopes'
+        required: true
+        default: 'https://www.googleapis.com/auth/devstorage.read_only,https://www.googleapis.com/auth/logging.write,https://www.googleapis.com/auth/monitoring.write,https://www.googleapis.com/auth/servicecontrol,https://www.googleapis.com/auth/service.management.readonly,https://www.googleapis.com/auth/trace.append'
         type: string
       project_id:
         description: 'Google Cloud Project ID'
@@ -67,7 +100,13 @@ jobs:
         id: vars
         run: |
           echo "ZONE=${{ inputs.zone }}" >> $GITHUB_ENV
-          echo "TEMPLATE=${{ inputs.template }}" >> $GITHUB_ENV
+          echo "MACHINE_TYPE=${{ inputs.machine_type }}" >> $GITHUB_ENV
+          echo "DISK_TYPE=${{ inputs.disk_type }}" >> $GITHUB_ENV
+          echo "DISK_SIZE=${{ inputs.disk_size }}" >> $GITHUB_ENV
+          echo "NETWORK=${{ inputs.network }}" >> $GITHUB_ENV
+          echo "NETWORK_TIER=${{ inputs.network_tier }}" >> $GITHUB_ENV
+          echo "SERVICE_ACCOUNT=${{ inputs.service_account }}" >> $GITHUB_ENV
+          echo "SCOPES=${{ inputs.scopes }}" >> $GITHUB_ENV
           echo "INIT_DATE=$(date +%Y%m%d-%H%M%S)" >> $GITHUB_ENV
           echo "DISK_NAME=plex-disk-$(date +%Y%m%d-%H%M%S)" >> $GITHUB_ENV
           echo "SERVER_NAME=plex-server-$(date +%Y%m%d-%H%M%S)" >> $GITHUB_ENV
@@ -93,14 +132,20 @@ jobs:
           gcloud compute disks create ${{ env.DISK_NAME }} \
             --project=${{ env.PROJECT_ID }} \
             --source-snapshot=${{ env.MOST_RECENT_SNAPSHOT }} \
-            --zone=${{ env.ZONE }}
+            --zone=${{ env.ZONE }} \
+            --type=${{ env.DISK_TYPE }} \
+            --size=${{ env.DISK_SIZE }}
 
-      - name: Create instance from template and disk
+      - name: Create instance from inputs and disk
         run: |
           gcloud compute instances create ${{ env.SERVER_NAME }} \
             --project=${{ env.PROJECT_ID }} \
             --zone=${{ env.ZONE }} \
-            --source-instance-template=${{ env.TEMPLATE }} \
+            --machine-type=${{ env.MACHINE_TYPE }} \
+            --network-interface=network=${{ env.NETWORK }},network-tier=${{ env.NETWORK_TIER }} \
+            --service-account=${{ env.SERVICE_ACCOUNT }} \
+            --scopes=${{ env.SCOPES }} \
+            --metadata-from-file=startup-script=gcloud-startup-script.sh \
             --disk=name=${{ env.DISK_NAME }},boot=yes,auto-delete=yes
 
       - name: Output completion message
