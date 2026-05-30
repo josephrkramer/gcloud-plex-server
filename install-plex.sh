@@ -11,6 +11,7 @@ sudo apt update
 sudo apt install -y curl gnupg2 apt-transport-https
 
 # Add the new Plex GPG key
+sudo mkdir -p -m 755 /etc/apt/keyrings
 curl -L https://downloads.plex.tv/plex-keys/PlexSign.v2.key | sudo gpg --yes --dearmor -o /etc/apt/keyrings/plexmediaserver.v2.gpg
 
 # Add the new repository to sources.list.d
