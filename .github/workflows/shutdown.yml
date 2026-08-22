@@ -1,6 +1,8 @@
 name: Plex Shutdown
 
 on:
+  schedule:
+    - cron: '0 5 * * *'
   workflow_dispatch:
     inputs:
       project_id:
@@ -29,7 +31,7 @@ jobs:
         run: |
           echo "INIT_DATE=$(date +%Y%m%d-%H%M%S)" >> $GITHUB_ENV
           echo "SNAPSHOT_NAME=plex-snapshot-$(date +%Y%m%d-%H%M%S)" >> $GITHUB_ENV
-          echo "PROJECT_ID=${{ inputs.project_id }}" >> $GITHUB_ENV
+          echo "PROJECT_ID=${{ inputs.project_id || 'basic-lock-251300' }}" >> $GITHUB_ENV
 
       - name: Configure gcloud project
         run: gcloud config set project ${{ env.PROJECT_ID }}

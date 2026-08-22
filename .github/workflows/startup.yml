@@ -1,6 +1,8 @@
 name: Plex Startup
 
 on:
+  schedule:
+    - cron: '0 21 * * *'
   workflow_dispatch:
     inputs:
       zone:
@@ -109,18 +111,18 @@ jobs:
       - name: Define Variables
         id: vars
         run: |
-          echo "ZONE=${{ inputs.zone }}" >> $GITHUB_ENV
-          echo "MACHINE_TYPE=${{ inputs.machine_type }}" >> $GITHUB_ENV
-          echo "DISK_TYPE=${{ inputs.disk_type }}" >> $GITHUB_ENV
-          echo "DISK_SIZE=${{ inputs.disk_size }}" >> $GITHUB_ENV
-          echo "NETWORK=${{ inputs.network }}" >> $GITHUB_ENV
-          echo "NETWORK_TIER=${{ inputs.network_tier }}" >> $GITHUB_ENV
-          echo "SERVICE_ACCOUNT=${{ inputs.service_account }}" >> $GITHUB_ENV
-          echo "SCOPES=${{ inputs.scopes }}" >> $GITHUB_ENV
+          echo "ZONE=${{ inputs.zone || 'us-east1-b' }}" >> $GITHUB_ENV
+          echo "MACHINE_TYPE=${{ inputs.machine_type || 'e2-standard-4' }}" >> $GITHUB_ENV
+          echo "DISK_TYPE=${{ inputs.disk_type || 'pd-balanced' }}" >> $GITHUB_ENV
+          echo "DISK_SIZE=${{ inputs.disk_size || '60' }}" >> $GITHUB_ENV
+          echo "NETWORK=${{ inputs.network || 'default' }}" >> $GITHUB_ENV
+          echo "NETWORK_TIER=${{ inputs.network_tier || 'PREMIUM' }}" >> $GITHUB_ENV
+          echo "SERVICE_ACCOUNT=${{ inputs.service_account || '453460631559-compute@developer.gserviceaccount.com' }}" >> $GITHUB_ENV
+          echo "SCOPES=${{ inputs.scopes || 'https://www.googleapis.com/auth/devstorage.read_only,https://www.googleapis.com/auth/logging.write,https://www.googleapis.com/auth/monitoring.write,https://www.googleapis.com/auth/servicecontrol,https://www.googleapis.com/auth/service.management.readonly,https://www.googleapis.com/auth/trace.append' }}" >> $GITHUB_ENV
           echo "INIT_DATE=$(date +%Y%m%d-%H%M%S)" >> $GITHUB_ENV
           echo "DISK_NAME=plex-disk-$(date +%Y%m%d-%H%M%S)" >> $GITHUB_ENV
           echo "SERVER_NAME=plex-server-$(date +%Y%m%d-%H%M%S)" >> $GITHUB_ENV
-          echo "PROJECT_ID=${{ inputs.project_id }}" >> $GITHUB_ENV
+          echo "PROJECT_ID=${{ inputs.project_id || 'basic-lock-251300' }}" >> $GITHUB_ENV
 
       - name: Configure gcloud project
         run: gcloud config set project ${{ env.PROJECT_ID }}
