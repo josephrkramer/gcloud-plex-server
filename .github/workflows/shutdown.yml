@@ -1,5 +1,8 @@
 name: Plex Shutdown
 
+env:
+  TZ: America/New_York
+
 on:
   schedule:
     - cron: '0 6 * * *' # 1:00 AM EST / 06:00 UTC

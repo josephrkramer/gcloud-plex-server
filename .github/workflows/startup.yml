@@ -1,5 +1,8 @@
 name: Plex Startup
 
+env:
+  TZ: America/New_York
+
 on:
   schedule:
     - cron: '0 22 * * *' # 5:00 PM EST / 22:00 UTC
