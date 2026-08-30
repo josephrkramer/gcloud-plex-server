@@ -2,7 +2,7 @@ name: Plex Shutdown
 
 on:
   schedule:
-    - cron: '0 5 * * *'
+    - cron: '0 6 * * *' # 1:00 AM EST / 06:00 UTC
   workflow_dispatch:
     inputs:
       project_id:
