@@ -5,7 +5,7 @@ env:
 
 on:
   schedule:
-    - cron: '0 17 * * *' # 5:00 PM EDT (17:00 New York time / 21:00 UTC)
+    - cron: '0 16 * * *' # 5:00 PM EDT (17:00 New York time / 21:00 UTC)
   workflow_dispatch:
     inputs:
       zone:
