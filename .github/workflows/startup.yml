@@ -4,8 +4,6 @@ env:
   TZ: America/New_York
 
 on:
-  schedule:
-    - cron: '0 16 * * *' # 5:00 PM EDT (17:00 New York time / 21:00 UTC)
   workflow_dispatch:
     inputs:
       zone:
